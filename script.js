@@ -1,40 +1,57 @@
-body {
-  margin: 0;
-  padding: 0;
-  font-family: "Yu Gothic", sans-serif;
-  color: #fff;
-  text-align: center;
-  height: 100vh;
-  background-image: url("background.jpg");
-  background-size: cover;
-  background-position: center;
+const quizData = [
+  {
+    question: "日本の首都は？",
+    choices: ["大阪", "京都", "東京", "名古屋"],
+    answer: 2
+  },
+  {
+    question: "地球は何番目の惑星？",
+    choices: ["1番目", "3番目", "5番目", "7番目"],
+    answer: 1
+  }
+];
+
+let current = 0;
+let score = 0;
+
+function startQuiz() {
+  document.querySelector(".home").classList.add("hidden");
+  document.getElementById("quiz").classList.remove("hidden");
+  showQuestion();
 }
 
-.hidden {
-  display: none;
+function showQuestion() {
+  const q = quizData[current];
+  document.getElementById("question").textContent = q.question;
+  const choicesDiv = document.getElementById("choices");
+  choicesDiv.innerHTML = "";
+  q.choices.forEach((c, i) => {
+    const btn = document.createElement("button");
+    btn.textContent = c;
+    btn.onclick = () => checkAnswer(i);
+    choicesDiv.appendChild(btn);
+  });
 }
 
-.home {
-  position: relative;
-  top: 40%;
-  transform: translateY(-40%);
-  background: rgba(0, 0, 0, 0.5);
-  padding: 40px;
-  border-radius: 20px;
-  display: inline-block;
+function checkAnswer(i) {
+  if (i === quizData[current].answer) score++;
+  current++;
+  if (current < quizData.length) {
+    showQuestion();
+  } else {
+    showResult();
+  }
 }
 
-button {
-  background-color: #ff7f50;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 12px;
-  font-size: 18px;
-  color: white;
-  cursor: pointer;
-  transition: 0.3s;
+function showResult() {
+  document.getElementById("quiz").classList.add("hidden");
+  document.getElementById("result").classList.remove("hidden");
+  document.getElementById("score").textContent = `${score} / ${quizData.length}問正解！`;
 }
 
-button:hover {
-  background-color: #ffa07a;
+function goHome() {
+  document.getElementById("result").classList.add("hidden");
+  document.querySelector(".home").classList.remove("hidden");
+  current = 0;
+  score = 0;
 }
