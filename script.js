@@ -62,7 +62,9 @@ function initQuiz() {
 // 問題表示
 function showQuestion() {
   const q = selectedQuestions[currentQuestionIndex];
-  questionEl.textContent = q.question;
+  // 問題番号表示
+  questionEl.textContent = `第${currentQuestionIndex + 1}問 / ${selectedQuestions.length}問\n${q.question}`;
+
   choicesEl.innerHTML = "";
   selectedAnswer = null;
   answered = false;
@@ -89,7 +91,7 @@ function showQuestion() {
 nextBtn.addEventListener("click", () => {
   const q = selectedQuestions[currentQuestionIndex];
 
-  if (!answered) { // 回答する段階
+  if (!answered) { // 回答段階
     if (!selectedAnswer) return alert("選択肢を選んでください");
 
     answered = true;
