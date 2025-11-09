@@ -43,6 +43,7 @@ const questions = [
 let currentQuestionIndex = 0;
 let selectedQuestions = [];
 let selectedAnswer = null;
+let answered = false;
 
 const questionEl = document.getElementById("question");
 const choicesEl = document.getElementById("choices");
@@ -53,6 +54,7 @@ const popupEl = document.getElementById("popup");
 function initQuiz() {
   selectedQuestions = [...questions].sort(() => 0.5 - Math.random()).slice(0,7);
   currentQuestionIndex = 0;
+  answered = false;
   nextBtn.textContent = "回答";
   showQuestion();
 }
@@ -63,6 +65,7 @@ function showQuestion() {
   questionEl.textContent = q.question;
   choicesEl.innerHTML = "";
   selectedAnswer = null;
+  answered = false;
   popupEl.classList.add("hidden");
   nextBtn.textContent = "回答";
 
@@ -72,7 +75,7 @@ function showQuestion() {
     btn.textContent = choice;
 
     btn.addEventListener("click", () => {
-      // 選択中の色を変える
+      if (answered) return;
       Array.from(choicesEl.children).forEach(b => b.style.backgroundColor="#4CAF50");
       btn.style.backgroundColor = "#00BFFF";
       selectedAnswer = choice;
@@ -82,26 +85,26 @@ function showQuestion() {
   });
 }
 
-// 回答ボタンクリック
+// 回答／次の問題ボタンクリック
 nextBtn.addEventListener("click", () => {
-  if (!selectedAnswer) return alert("選択肢を選んでください");
-
   const q = selectedQuestions[currentQuestionIndex];
-  const buttons = choicesEl.children;
 
-  // 選択後に正解/不正解の色を表示
-  for (let btn of buttons) {
-    if (btn.textContent === q.answer) btn.style.backgroundColor = "green";
-    else if (btn.textContent === selectedAnswer) btn.style.backgroundColor = "red";
-  }
+  if (!answered) { // 回答する段階
+    if (!selectedAnswer) return alert("選択肢を選んでください");
 
-  popupEl.textContent = selectedAnswer === q.answer ? "正解！" : "不正解！";
-  popupEl.classList.remove("hidden");
+    answered = true;
 
-  // 次回のボタン設定
-  if (nextBtn.textContent === "回答") {
+    // 選択後に正解/不正解の色を表示
+    Array.from(choicesEl.children).forEach(btn => {
+      if (btn.textContent === q.answer) btn.style.backgroundColor = "green";
+      else if (btn.textContent === selectedAnswer) btn.style.backgroundColor = "red";
+    });
+
+    popupEl.textContent = selectedAnswer === q.answer ? "正解！" : "不正解！";
+    popupEl.classList.remove("hidden");
+
     nextBtn.textContent = currentQuestionIndex < selectedQuestions.length - 1 ? "次の問題" : "終了";
-  } else {
+  } else { // 次の問題へ
     currentQuestionIndex++;
     if (currentQuestionIndex < selectedQuestions.length) {
       showQuestion();
@@ -114,5 +117,5 @@ nextBtn.addEventListener("click", () => {
   }
 });
 
-// 初期化実行
+// 初期化
 initQuiz();
