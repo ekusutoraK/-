@@ -77,7 +77,7 @@ function showQuestion() {
     btn.addEventListener("click", () => {
       if (answered) return;
       Array.from(choicesEl.children).forEach(b => b.style.backgroundColor="#4CAF50");
-      btn.style.backgroundColor = "#00BFFF";
+      btn.style.backgroundColor = "#00BFFF"; // 選択色
       selectedAnswer = choice;
     });
     choicesEl.appendChild(btn);
