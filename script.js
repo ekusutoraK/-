@@ -56,13 +56,13 @@ function initQuiz() {
   currentQuestionIndex = 0;
   answered = false;
   nextBtn.textContent = "回答";
+  nextBtn.classList.remove("hidden");
   showQuestion();
 }
 
 // 問題表示
 function showQuestion() {
   const q = selectedQuestions[currentQuestionIndex];
-  // 問題番号表示
   questionEl.textContent = `第${currentQuestionIndex + 1}問 / ${selectedQuestions.length}問\n${q.question}`;
 
   choicesEl.innerHTML = "";
