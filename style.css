@@ -1,15 +1,14 @@
 body {
-  font-family: "Arial", sans-serif;
-  background-image: url('https://raw.githubusercontent.com/ekusutoraK/yuhakuizu/main/background.jpg');
+  background: url("background.jpg") no-repeat center center fixed;
   background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  font-family: "Arial", sans-serif;
+  color: #fff;
+  text-align: center;
   height: 100vh;
   margin: 0;
   display: flex;
   justify-content: center;
   align-items: center;
-  color: #fff;
 }
 
 .quiz-container {
@@ -18,57 +17,55 @@ body {
   border-radius: 20px;
   width: 80%;
   max-width: 400px;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
-  text-align: center;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
 }
 
-.quiz-container h1 {
-  margin-bottom: 20px;
-  font-size: 28px;
-  letter-spacing: 1px;
-}
-
-#question {
-  font-size: 20px;
-  margin-bottom: 20px;
-}
-
-#choices button {
-  display: block;
-  margin: 10px auto;
-  padding: 10px;
-  width: 100%;
-  border: none;
-  border-radius: 10px;
+button {
   background-color: #4CAF50;
   color: white;
-  cursor: pointer;
-  font-size: 16px;
-  transition: 0.2s;
-}
-
-#choices button:hover {
-  background-color: #45a049;
-  transform: scale(1.03);
-}
-
-#next-btn {
-  margin-top: 20px;
   padding: 10px 20px;
-  font-size: 16px;
+  margin: 8px;
   border: none;
   border-radius: 10px;
-  background-color: #2196F3;
-  color: white;
   cursor: pointer;
-  transition: 0.2s;
+  font-size: 16px;
 }
 
-#next-btn:hover {
-  background-color: #1976D2;
-  transform: scale(1.05);
+button:hover {
+  background-color: #45a049;
 }
 
 .hidden {
   display: none;
+}
+
+/* ✅ 画面中央に出す正解・不正解ポップアップ */
+#popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 50px;
+  font-weight: bold;
+  z-index: 10;
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+
+#popup.show {
+  opacity: 1;
+}
+
+#popup.correct {
+  color: #00ff99;
+}
+
+#popup.wrong {
+  color: #ff5555;
 }
