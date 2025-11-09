@@ -49,12 +49,15 @@ const choicesEl = document.getElementById("choices");
 const nextBtn = document.getElementById("next-btn");
 const popupEl = document.getElementById("popup");
 
+// クイズ初期化
 function initQuiz() {
   selectedQuestions = [...questions].sort(() => 0.5 - Math.random()).slice(0,7);
   currentQuestionIndex = 0;
+  nextBtn.textContent = "回答";
   showQuestion();
 }
 
+// 問題表示
 function showQuestion() {
   const q = selectedQuestions[currentQuestionIndex];
   questionEl.textContent = q.question;
@@ -69,6 +72,7 @@ function showQuestion() {
     btn.textContent = choice;
 
     btn.addEventListener("click", () => {
+      // 選択中の色を変える
       Array.from(choicesEl.children).forEach(b => b.style.backgroundColor="#4CAF50");
       btn.style.backgroundColor = "#00BFFF";
       selectedAnswer = choice;
@@ -78,11 +82,14 @@ function showQuestion() {
   });
 }
 
+// 回答ボタンクリック
 nextBtn.addEventListener("click", () => {
   if (!selectedAnswer) return alert("選択肢を選んでください");
+
   const q = selectedQuestions[currentQuestionIndex];
   const buttons = choicesEl.children;
 
+  // 選択後に正解/不正解の色を表示
   for (let btn of buttons) {
     if (btn.textContent === q.answer) btn.style.backgroundColor = "green";
     else if (btn.textContent === selectedAnswer) btn.style.backgroundColor = "red";
@@ -90,9 +97,11 @@ nextBtn.addEventListener("click", () => {
 
   popupEl.textContent = selectedAnswer === q.answer ? "正解！" : "不正解！";
   popupEl.classList.remove("hidden");
-  nextBtn.textContent = currentQuestionIndex < selectedQuestions.length - 1 ? "次の問題" : "終了";
 
-  nextBtn.onclick = () => {
+  // 次回のボタン設定
+  if (nextBtn.textContent === "回答") {
+    nextBtn.textContent = currentQuestionIndex < selectedQuestions.length - 1 ? "次の問題" : "終了";
+  } else {
     currentQuestionIndex++;
     if (currentQuestionIndex < selectedQuestions.length) {
       showQuestion();
@@ -102,7 +111,8 @@ nextBtn.addEventListener("click", () => {
       nextBtn.classList.add("hidden");
       popupEl.classList.add("hidden");
     }
-  };
+  }
 });
 
+// 初期化実行
 initQuiz();
