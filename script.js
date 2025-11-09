@@ -47,16 +47,14 @@ let answered = false;
 
 const questionEl = document.getElementById("question");
 const choicesEl = document.getElementById("choices");
+const answerBtn = document.getElementById("answer-btn");
 const nextBtn = document.getElementById("next-btn");
 const popupEl = document.getElementById("popup");
 
-// クイズ初期化
+// 初期化
 function initQuiz() {
   selectedQuestions = [...questions].sort(() => 0.5 - Math.random()).slice(0,7);
   currentQuestionIndex = 0;
-  answered = false;
-  nextBtn.textContent = "回答";
-  nextBtn.classList.remove("hidden");
   showQuestion();
 }
 
@@ -69,55 +67,54 @@ function showQuestion() {
   selectedAnswer = null;
   answered = false;
   popupEl.classList.add("hidden");
-  nextBtn.textContent = "回答";
+  answerBtn.classList.remove("hidden");
+  nextBtn.classList.add("hidden");
 
   const shuffledChoices = [...q.choices].sort(() => 0.5 - Math.random());
   shuffledChoices.forEach(choice => {
     const btn = document.createElement("button");
     btn.textContent = choice;
-
     btn.addEventListener("click", () => {
       if (answered) return;
       Array.from(choicesEl.children).forEach(b => b.style.backgroundColor="#4CAF50");
       btn.style.backgroundColor = "#00BFFF";
       selectedAnswer = choice;
     });
-
     choicesEl.appendChild(btn);
   });
 }
 
-// 回答／次の問題ボタンクリック
-nextBtn.addEventListener("click", () => {
+// 回答ボタン
+answerBtn.addEventListener("click", () => {
+  if (!selectedAnswer) return alert("選択肢を選んでください");
+
+  answered = true;
   const q = selectedQuestions[currentQuestionIndex];
 
-  if (!answered) { // 回答段階
-    if (!selectedAnswer) return alert("選択肢を選んでください");
+  Array.from(choicesEl.children).forEach(btn => {
+    if (btn.textContent === q.answer) btn.style.backgroundColor = "green";
+    else if (btn.textContent === selectedAnswer) btn.style.backgroundColor = "red";
+  });
 
-    answered = true;
+  popupEl.textContent = selectedAnswer === q.answer ? "正解！" : "不正解！";
+  popupEl.classList.remove("hidden");
 
-    // 選択後に正解/不正解の色を表示
-    Array.from(choicesEl.children).forEach(btn => {
-      if (btn.textContent === q.answer) btn.style.backgroundColor = "green";
-      else if (btn.textContent === selectedAnswer) btn.style.backgroundColor = "red";
-    });
+  answerBtn.classList.add("hidden");
+  nextBtn.classList.remove("hidden");
+});
 
-    popupEl.textContent = selectedAnswer === q.answer ? "正解！" : "不正解！";
-    popupEl.classList.remove("hidden");
-
-    nextBtn.textContent = currentQuestionIndex < selectedQuestions.length - 1 ? "次の問題" : "終了";
-  } else { // 次の問題へ
-    currentQuestionIndex++;
-    if (currentQuestionIndex < selectedQuestions.length) {
-      showQuestion();
-    } else {
-      questionEl.textContent = "クイズ終了！";
-      choicesEl.innerHTML = "";
-      nextBtn.classList.add("hidden");
-      popupEl.classList.add("hidden");
-    }
+// 次へボタン
+nextBtn.addEventListener("click", () => {
+  currentQuestionIndex++;
+  if (currentQuestionIndex < selectedQuestions.length) {
+    showQuestion();
+  } else {
+    questionEl.textContent = "クイズ終了！";
+    choicesEl.innerHTML = "";
+    answerBtn.classList.add("hidden");
+    nextBtn.classList.add("hidden");
+    popupEl.classList.add("hidden");
   }
 });
 
-// 初期化
 initQuiz();
