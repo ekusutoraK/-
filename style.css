@@ -31,7 +31,7 @@ body {
 #question {
   font-size: 20px;
   margin-bottom: 20px;
-  white-space: pre-line; /* 改行を有効に */
+  white-space: pre-line;
 }
 
 #choices button {
@@ -53,20 +53,33 @@ body {
   transform: scale(1.03);
 }
 
-#next-btn {
+#answer-btn, #next-btn {
   margin-top: 20px;
   padding: 10px 20px;
   font-size: 16px;
   border: none;
   border-radius: 10px;
-  background-color: #2196F3;
-  color: white;
   cursor: pointer;
   transition: 0.2s;
 }
 
-#next-btn:hover {
+#answer-btn {
+  background-color: #2196F3;
+  color: white;
+}
+
+#answer-btn:hover {
   background-color: #1976D2;
+  transform: scale(1.05);
+}
+
+#next-btn {
+  background-color: #FF9800;
+  color: white;
+}
+
+#next-btn:hover {
+  background-color: #F57C00;
   transform: scale(1.05);
 }
 
