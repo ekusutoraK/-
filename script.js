@@ -1,57 +1,62 @@
-const quizData = [
+const quiz = [
   {
     question: "日本の首都は？",
-    choices: ["大阪", "京都", "東京", "名古屋"],
-    answer: 2
+    choices: ["大阪", "東京", "名古屋", "札幌"],
+    answer: "東京"
   },
   {
-    question: "地球は何番目の惑星？",
-    choices: ["1番目", "3番目", "5番目", "7番目"],
-    answer: 1
+    question: "富士山の標高は？",
+    choices: ["2776m", "3776m", "4776m", "5776m"],
+    answer: "3776m"
+  },
+  {
+    question: "りんごは英語で？",
+    choices: ["Banana", "Grape", "Apple", "Melon"],
+    answer: "Apple"
   }
 ];
 
-let current = 0;
+let currentQuestion = 0;
 let score = 0;
 
-function startQuiz() {
-  document.querySelector(".home").classList.add("hidden");
-  document.getElementById("quiz").classList.remove("hidden");
-  showQuestion();
-}
+const questionEl = document.getElementById("question");
+const choicesEl = document.getElementById("choices");
+const nextBtn = document.getElementById("next-btn");
 
 function showQuestion() {
-  const q = quizData[current];
-  document.getElementById("question").textContent = q.question;
-  const choicesDiv = document.getElementById("choices");
-  choicesDiv.innerHTML = "";
-  q.choices.forEach((c, i) => {
+  const q = quiz[currentQuestion];
+  questionEl.textContent = q.question;
+  choicesEl.innerHTML = "";
+  q.choices.forEach(choice => {
     const btn = document.createElement("button");
-    btn.textContent = c;
-    btn.onclick = () => checkAnswer(i);
-    choicesDiv.appendChild(btn);
+    btn.textContent = choice;
+    btn.onclick = () => checkAnswer(choice);
+    choicesEl.appendChild(btn);
   });
 }
 
-function checkAnswer(i) {
-  if (i === quizData[current].answer) score++;
-  current++;
-  if (current < quizData.length) {
-    showQuestion();
+function checkAnswer(choice) {
+  const correct = quiz[currentQuestion].answer;
+  if (choice === correct) {
+    alert("正解！");
+    score++;
   } else {
-    showResult();
+    alert(`不正解！正解は「${correct}」です。`);
   }
+  nextBtn.classList.remove("hidden");
 }
 
-function showResult() {
-  document.getElementById("quiz").classList.add("hidden");
-  document.getElementById("result").classList.remove("hidden");
-  document.getElementById("score").textContent = `${score} / ${quizData.length}問正解！`;
-}
+nextBtn.onclick = () => {
+  currentQuestion++;
+  if (currentQuestion < quiz.length) {
+    showQuestion();
+    nextBtn.classList.add("hidden");
+  } else {
+    questionEl.textContent = `終了！あなたの得点は ${score} / ${quiz.length} 点です`;
+    choicesEl.innerHTML = "";
+    nextBtn.classList.add("hidden");
+  }
+};
 
-function goHome() {
-  document.getElementById("result").classList.add("hidden");
-  document.querySelector(".home").classList.remove("hidden");
-  current = 0;
-  score = 0;
-}
+// 最初の問題を表示
+showQuestion();
