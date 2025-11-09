@@ -54,33 +54,34 @@ body {
 }
 
 #answer-btn, #next-btn {
-  margin-top: 20px;
-  padding: 10px 20px;
-  font-size: 16px;
+  display: block;
+  margin: 10px auto;
+  padding: 10px;
+  width: 100%;
   border: none;
   border-radius: 10px;
+  font-size: 16px;
   cursor: pointer;
   transition: 0.2s;
+  color: white;
 }
 
 #answer-btn {
   background-color: #2196F3;
-  color: white;
 }
 
 #answer-btn:hover {
   background-color: #1976D2;
-  transform: scale(1.05);
+  transform: scale(1.03);
 }
 
 #next-btn {
   background-color: #FF9800;
-  color: white;
 }
 
 #next-btn:hover {
   background-color: #F57C00;
-  transform: scale(1.05);
+  transform: scale(1.03);
 }
 
 #popup {
