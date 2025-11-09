@@ -21,42 +21,45 @@ let score = 0;
 
 const questionEl = document.getElementById("question");
 const choicesEl = document.getElementById("choices");
-const resultEl = document.getElementById("result"); // 👈 追加
 const nextBtn = document.getElementById("next-btn");
+const popup = document.getElementById("popup");
 
 function showQuestion() {
   const q = quiz[currentQuestion];
   questionEl.textContent = q.question;
   choicesEl.innerHTML = "";
-  resultEl.textContent = ""; // 👈 前の結果を消す
 
   q.choices.forEach(choice => {
     const btn = document.createElement("button");
     btn.textContent = choice;
-    btn.onclick = () => checkAnswer(btn, choice);
+    btn.onclick = () => checkAnswer(choice);
     choicesEl.appendChild(btn);
   });
 }
 
-function checkAnswer(button, choice) {
+function checkAnswer(choice) {
   const correct = quiz[currentQuestion].answer;
   const buttons = choicesEl.querySelectorAll("button");
-
-  // 全ボタン無効化
   buttons.forEach(btn => btn.disabled = true);
 
   if (choice === correct) {
-    button.style.backgroundColor = "#4CAF50"; // 緑
-    resultEl.textContent = "✅ 正解！";
-    resultEl.style.color = "#4CAF50";
+    showPopup("正解！", true);
     score++;
   } else {
-    button.style.backgroundColor = "#f44336"; // 赤
-    resultEl.textContent = `❌ 不正解！ 正解は「${correct}」`;
-    resultEl.style.color = "#f44336";
+    showPopup(`不正解！\n正解は「${correct}」`, false);
   }
 
   nextBtn.classList.remove("hidden");
+}
+
+function showPopup(text, isCorrect) {
+  popup.textContent = text;
+  popup.className = `show ${isCorrect ? "correct" : "wrong"}`;
+  popup.classList.remove("hidden");
+
+  popup.onclick = () => {
+    popup.className = "hidden";
+  };
 }
 
 nextBtn.onclick = () => {
@@ -71,9 +74,9 @@ nextBtn.onclick = () => {
 
 function showResult() {
   questionEl.textContent = "🎉 終了！";
-  resultEl.textContent = `あなたの得点は ${score} / ${quiz.length} 点です`;
-  resultEl.style.color = "#FFD700";
   choicesEl.innerHTML = "";
+  popup.textContent = `あなたの得点は ${score} / ${quiz.length} 点です`;
+  popup.className = "show correct";
   nextBtn.textContent = "もう一度";
   nextBtn.onclick = restartQuiz;
 }
@@ -82,9 +85,9 @@ function restartQuiz() {
   currentQuestion = 0;
   score = 0;
   nextBtn.textContent = "次へ";
+  popup.className = "hidden";
   showQuestion();
   nextBtn.classList.add("hidden");
 }
 
-// 最初の問題を表示
 showQuestion();
