@@ -1,15 +1,15 @@
 body {
   font-family: "Arial", sans-serif;
-  background-image: url('background.jpg');
+  background-image: url('https://raw.githubusercontent.com/ekusutoraK/yuhakuizu/main/background.jpg');
   background-size: cover;
   background-position: center;
-  color: #fff;
-  text-align: center;
+  background-repeat: no-repeat;
   height: 100vh;
   margin: 0;
   display: flex;
   justify-content: center;
   align-items: center;
+  color: #fff;
 }
 
 .quiz-container {
@@ -18,6 +18,19 @@ body {
   border-radius: 20px;
   width: 80%;
   max-width: 400px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+  text-align: center;
+}
+
+.quiz-container h1 {
+  margin-bottom: 20px;
+  font-size: 28px;
+  letter-spacing: 1px;
+}
+
+#question {
+  font-size: 20px;
+  margin-bottom: 20px;
 }
 
 #choices button {
@@ -31,14 +44,31 @@ body {
   color: white;
   cursor: pointer;
   font-size: 16px;
+  transition: 0.2s;
 }
 
 #choices button:hover {
   background-color: #45a049;
+  transform: scale(1.03);
+}
+
+#next-btn {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 10px;
+  background-color: #2196F3;
+  color: white;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+#next-btn:hover {
+  background-color: #1976D2;
+  transform: scale(1.05);
 }
 
 .hidden {
   display: none;
 }
-
-
