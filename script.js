@@ -21,12 +21,14 @@ let score = 0;
 
 const questionEl = document.getElementById("question");
 const choicesEl = document.getElementById("choices");
+const resultEl = document.getElementById("result"); // 👈 追加
 const nextBtn = document.getElementById("next-btn");
 
 function showQuestion() {
   const q = quiz[currentQuestion];
   questionEl.textContent = q.question;
   choicesEl.innerHTML = "";
+  resultEl.textContent = ""; // 👈 前の結果を消す
 
   q.choices.forEach(choice => {
     const btn = document.createElement("button");
@@ -40,16 +42,18 @@ function checkAnswer(button, choice) {
   const correct = quiz[currentQuestion].answer;
   const buttons = choicesEl.querySelectorAll("button");
 
-  // すべてのボタンを一時的に無効化
+  // 全ボタン無効化
   buttons.forEach(btn => btn.disabled = true);
 
   if (choice === correct) {
     button.style.backgroundColor = "#4CAF50"; // 緑
-    questionEl.textContent = "✅ 正解！";
+    resultEl.textContent = "✅ 正解！";
+    resultEl.style.color = "#4CAF50";
     score++;
   } else {
     button.style.backgroundColor = "#f44336"; // 赤
-    questionEl.textContent = `❌ 不正解！ 正解は「${correct}」`;
+    resultEl.textContent = `❌ 不正解！ 正解は「${correct}」`;
+    resultEl.style.color = "#f44336";
   }
 
   nextBtn.classList.remove("hidden");
@@ -66,7 +70,9 @@ nextBtn.onclick = () => {
 };
 
 function showResult() {
-  questionEl.textContent = `🎉 終了！あなたの得点は ${score} / ${quiz.length} 点です`;
+  questionEl.textContent = "🎉 終了！";
+  resultEl.textContent = `あなたの得点は ${score} / ${quiz.length} 点です`;
+  resultEl.style.color = "#FFD700";
   choicesEl.innerHTML = "";
   nextBtn.textContent = "もう一度";
   nextBtn.onclick = restartQuiz;
