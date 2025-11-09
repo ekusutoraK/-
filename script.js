@@ -40,80 +40,81 @@ const quiz = [
   { q: "ゆはいちゃんねるの好きなポケモンは？", a: ["ミミッキュ", "ピカチュウ", "ライチュウ", "ピチュー"], correct: "ミミッキュ" }
 ];
 
-// ランダムに7問選ぶ
-let questions = quiz.sort(() => 0.5 - Math.random()).slice(0, 7);
-
-let current = 0;
+let currentIndex = 0;
 let score = 0;
+let questions = [];
 
-const questionEl = document.getElementById("question");
-const choicesEl = document.getElementById("choices");
+const questionElem = document.getElementById("question");
+const choicesElem = document.getElementById("choices");
 const nextBtn = document.getElementById("next-btn");
+const feedback = document.createElement("div");
+feedback.id = "feedback";
+document.querySelector(".quiz-container").appendChild(feedback);
+
+function shuffleArray(arr) {
+  return arr.sort(() => Math.random() - 0.5);
+}
+
+function startQuiz() {
+  questions = shuffleArray([...allQuestions]).slice(0, 7);
+  currentIndex = 0;
+  score = 0;
+  showQuestion();
+}
 
 function showQuestion() {
-  let q = questions[current];
-  questionEl.textContent = `Q${current + 1}. ${q.q}`;
+  const current = questions[currentIndex];
+  questionElem.textContent = current.q;
+  choicesElem.innerHTML = "";
 
-  // 選択肢をランダムシャッフル
-  let shuffledChoices = [...q.a].sort(() => Math.random() - 0.5);
-
-  choicesEl.innerHTML = "";
+  const shuffledChoices = shuffleArray([...current.c]);
   shuffledChoices.forEach(choice => {
     const btn = document.createElement("button");
     btn.textContent = choice;
-    btn.onclick = () => selectAnswer(choice, q.correct);
-    choicesEl.appendChild(btn);
+    btn.onclick = () => selectAnswer(choice);
+    choicesElem.appendChild(btn);
   });
+
+  nextBtn.classList.add("hidden");
+  feedback.textContent = "";
 }
 
-function selectAnswer(choice, correct) {
-  const buttons = choicesEl.querySelectorAll("button");
+function selectAnswer(choice) {
+  const current = questions[currentIndex];
+  const buttons = document.querySelectorAll("#choices button");
+
   buttons.forEach(btn => btn.disabled = true);
 
-  const resultMsg = document.createElement("div");
-  resultMsg.style.marginTop = "15px";
-  resultMsg.style.fontWeight = "bold";
-
-  if (choice === correct) {
+  if (choice === current.a) {
     score++;
-    resultMsg.textContent = "✅ 正解！";
-    resultMsg.style.color = "#4CAF50";
+    feedback.textContent = "✅ 正解！";
+    feedback.style.color = "#00FF88";
   } else {
-    resultMsg.textContent = `❌ 不正解…（正解：${correct}）`;
-    resultMsg.style.color = "#ff4444";
+    feedback.textContent = `❌ 不正解！ 正解は「${current.a}」`;
+    feedback.style.color = "#FF5555";
   }
 
-  choicesEl.appendChild(resultMsg);
   nextBtn.classList.remove("hidden");
 }
 
-nextBtn.addEventListener("click", () => {
-  current++;
-  nextBtn.classList.add("hidden");
-
-  if (current < questions.length) {
+nextBtn.onclick = () => {
+  currentIndex++;
+  if (currentIndex < questions.length) {
     showQuestion();
   } else {
     showResult();
   }
-});
+};
 
 function showResult() {
-  questionEl.textContent = `結果発表！`;
-  choicesEl.innerHTML = `<h2>あなたの得点は ${score} / ${questions.length} 点です🎉</h2>`;
+  questionElem.textContent = `お疲れ様！あなたの得点は ${score} / ${questions.length} 点です！`;
+  choicesElem.innerHTML = "";
+  feedback.textContent = "";
   nextBtn.textContent = "もう一度遊ぶ";
-  nextBtn.classList.remove("hidden");
-  nextBtn.onclick = restartQuiz;
+  nextBtn.onclick = () => {
+    nextBtn.textContent = "次へ";
+    startQuiz();
+  };
 }
 
-function restartQuiz() {
-  // ランダムに再抽選して再スタート
-  questions = quiz.sort(() => 0.5 - Math.random()).slice(0, 7);
-  current = 0;
-  score = 0;
-  nextBtn.textContent = "次へ";
-  nextBtn.classList.add("hidden");
-  showQuestion();
-}
-
-showQuestion();
+startQuiz();
