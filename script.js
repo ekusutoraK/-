@@ -37,7 +37,7 @@ const allQuestions = [
   { q: "ゆはいちゃんねるが学生時代に書いた絵本のタイトルはなに？", c: ["湯原俊哉の冒険", "バナニンティウス物語", "友達に戻りませんか", "絵本を作ったことがない"], a: "バナニンティウス物語" },
   { q: "ゆはいちゃんねるが一番好きな寿司のネタは？", c: ["わさびなす", "いくら", "えんがわ", "まぐろ"], a: "えんがわ" },
   { q: "ゆはいちゃんねるが焼肉で絶対に頼むものは？", c: ["コーラ", "タン", "キャベツ", "ソーセージ"], a: "ソーセージ" },
-  { q: "ゆはいちゃんねるの好きなポケモンは？", c: ["ミミッキュ", "ピカチュウ", "ライチュウ", "ピチュー"], a: "ミミッキュ" },
+  { q: "ゆはいちゃんねるの好きなポケモンは？", c: ["ミミッキュ", "ピカチュウ", "ライチュウ", "ピチュー"], a: "ミミッキュ" }
 ];
 
 let currentIndex = 0;
@@ -47,9 +47,7 @@ let questions = [];
 const questionElem = document.getElementById("question");
 const choicesElem = document.getElementById("choices");
 const nextBtn = document.getElementById("next-btn");
-const feedback = document.createElement("div");
-feedback.id = "feedback";
-document.querySelector(".quiz-container").appendChild(feedback);
+const popup = document.getElementById("popup");
 
 function shuffleArray(arr) {
   return arr.sort(() => Math.random() - 0.5);
@@ -77,7 +75,7 @@ function showQuestion() {
   });
 
   nextBtn.classList.add("hidden");
-  feedback.textContent = "";
+  popup.classList.add("hidden");
 }
 
 function selectAnswer(choice) {
@@ -88,14 +86,22 @@ function selectAnswer(choice) {
 
   if (choice === current.a) {
     score++;
-    feedback.textContent = "✅ 正解！";
-    feedback.style.color = "#00FF88";
+    showPopup("✅ 正解！", "#00FF88");
   } else {
-    feedback.textContent = `❌ 不正解！ 正解は「${current.a}」`;
-    feedback.style.color = "#FF5555";
+    showPopup(`❌ 不正解！ 正解は「${current.a}」`, "#FF5555");
   }
 
   nextBtn.classList.remove("hidden");
+}
+
+function showPopup(message, color) {
+  popup.textContent = message;
+  popup.style.color = color;
+  popup.classList.remove("hidden");
+  popup.classList.add("fade");
+  setTimeout(() => {
+    popup.classList.remove("fade");
+  }, 600);
 }
 
 nextBtn.onclick = () => {
@@ -110,7 +116,7 @@ nextBtn.onclick = () => {
 function showResult() {
   questionElem.textContent = `お疲れ様！あなたの得点は ${score} / ${questions.length} 点です！`;
   choicesElem.innerHTML = "";
-  feedback.textContent = "";
+  popup.classList.add("hidden");
   nextBtn.textContent = "もう一度遊ぶ";
   nextBtn.onclick = () => startQuiz();
 }
