@@ -17,7 +17,7 @@ body {
   padding: 30px;
   border-radius: 20px;
   width: 80%;
-  max-width: 600px;
+  max-width: 500px;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
   text-align: center;
 }
@@ -74,7 +74,15 @@ body {
 }
 
 #popup {
-  margin-top: 15px;
-  font-size: 18px;
-  font-weight: bold;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(0,0,0,0.8);
+  color: #fff;
+  padding: 20px 40px;
+  font-size: 24px;
+  border-radius: 15px;
+  text-align: center;
+  z-index: 10;
 }
