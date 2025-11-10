@@ -44,6 +44,7 @@ let currentQuestionIndex = 0;
 let selectedQuestions = [];
 let selectedAnswer = null;
 let answered = false;
+let score = 0;
 
 const questionEl = document.getElementById("question");
 const choicesEl = document.getElementById("choices");
@@ -52,9 +53,10 @@ const nextBtn = document.getElementById("next-btn");
 
 // 初期化
 function initQuiz() {
-  // ✅ 必ず7問だけ選ぶ
+  // ランダムに7問だけ選択
   selectedQuestions = [...questions].sort(() => 0.5 - Math.random()).slice(0, 7);
   currentQuestionIndex = 0;
+  score = 0;
   showQuestion();
 }
 
@@ -75,11 +77,11 @@ function showQuestion() {
     const btn = document.createElement("button");
     btn.textContent = choice;
     btn.className = "choice-btn";
-    btn.style.backgroundColor = "#4CAF50";
     btn.addEventListener("click", () => {
       if (answered) return;
-      Array.from(choicesEl.children).forEach(b => b.style.backgroundColor = "#4CAF50");
-      btn.style.backgroundColor = "#00BFFF";
+      Array.from(choicesEl.children).forEach(b => b.classList.remove("dim"));
+      Array.from(choicesEl.children).forEach(b => b.classList.remove("selected"));
+      btn.classList.add("selected");
       selectedAnswer = choice;
     });
     choicesEl.appendChild(btn);
@@ -99,15 +101,15 @@ answerBtn.addEventListener("click", () => {
   Array.from(choicesEl.children).forEach(btn => {
     btn.disabled = true;
     if (btn.textContent === q.answer) {
-      btn.style.backgroundColor = "#00BFFF"; // 正解
+      btn.classList.add("correct");
     } else if (btn.textContent === selectedAnswer) {
-      btn.style.backgroundColor = "#FF4444"; // 不正解
+      btn.classList.add("incorrect");
     } else {
-      btn.style.backgroundColor = "#CCCCCC"; // その他
-      btn.style.color = "#333";
-      btn.style.opacity = "0.6";
+      btn.classList.add("dim");
     }
   });
+
+  if (selectedAnswer === q.answer) score++;
 
   answerBtn.classList.add("hidden");
   nextBtn.classList.remove("hidden");
@@ -116,7 +118,6 @@ answerBtn.addEventListener("click", () => {
 // 次へボタン押下
 nextBtn.addEventListener("click", () => {
   currentQuestionIndex++;
-  // ✅ 7問終わったら結果へ
   if (currentQuestionIndex >= selectedQuestions.length) {
     showResult();
   } else {
@@ -126,10 +127,38 @@ nextBtn.addEventListener("click", () => {
 
 // 結果表示
 function showResult() {
-  questionEl.textContent = "🎉 クイズ終了！お疲れさまでした！";
   choicesEl.innerHTML = "";
   answerBtn.classList.add("hidden");
   nextBtn.classList.add("hidden");
+
+  const total = selectedQuestions.length;
+  let title = "";
+  let subtitle = "";
+
+  if (score === total) {
+    title = "PERFECT!";
+    subtitle = `全問正解！あなたはクイズマスターです (${score}/${total})`;
+  } else if (score >= total * 0.7) {
+    title = "WELL DONE!";
+    subtitle = `よくできました！正解数: ${score}/${total}`;
+  } else if (score >= total * 0.4) {
+    title = "NOT BAD!";
+    subtitle = `もう少し！正解数: ${score}/${total}`;
+  } else {
+    title = "TRY AGAIN!";
+    subtitle = `がんばろう！正解数: ${score}/${total}`;
+  }
+
+  questionEl.innerHTML = `<span style="font-size:36px; font-weight:bold; display:block;">${title}</span>
+                          <span style="font-size:18px; display:block; margin-top:10px;">${subtitle}</span>`;
+
+  // もう一度挑戦ボタン
+  nextBtn.textContent = "もう一度挑戦";
+  nextBtn.classList.remove("hidden");
+  nextBtn.addEventListener("click", () => {
+    nextBtn.textContent = "次へ";
+    initQuiz();
+  }, { once: true });
 }
 
 // クイズ開始
