@@ -45,48 +45,67 @@ let selectedQuestions = [];
 let selectedAnswer = null;
 let answered = false;
 
+// ------------------------------
+// DOM取得
+// ------------------------------
 const questionEl = document.getElementById("question");
 const choicesEl = document.getElementById("choices");
 const answerBtn = document.getElementById("answer-btn");
 const nextBtn = document.getElementById("next-btn");
 
-// ✅ 初期化
+// ------------------------------
+// クイズ初期化
+// ------------------------------
 function initQuiz() {
-  selectedQuestions = [...questions].sort(() => 0.5 - Math.random()).slice(0, 7);
+  selectedQuestions = [...questions].sort(() => 0.5 - Math.random()); // ランダム
   currentQuestionIndex = 0;
   showQuestion();
+  nextBtn.style.display = "none"; // 初期は「次へ」非表示
 }
 
-// ✅ 問題を表示
+// ------------------------------
+// 問題表示
+// ------------------------------
 function showQuestion() {
   const q = selectedQuestions[currentQuestionIndex];
+  if (!q) return;
+
+  // 問題文
   questionEl.textContent = `第${currentQuestionIndex + 1}問 / ${selectedQuestions.length}問\n${q.question}`;
 
+  // 選択肢エリア初期化
   choicesEl.innerHTML = "";
   selectedAnswer = null;
   answered = false;
 
-  // ボタン状態リセット
+  // ボタン表示設定
   answerBtn.style.display = "block";
   nextBtn.style.display = "none";
 
-  // 選択肢をランダムに表示
+  // 選択肢をランダムに配置
   const shuffledChoices = [...q.choices].sort(() => 0.5 - Math.random());
   shuffledChoices.forEach(choice => {
     const btn = document.createElement("button");
     btn.textContent = choice;
-    btn.classList.remove("correct", "incorrect", "dim");
+    btn.className = "choice-btn";
     btn.style.backgroundColor = "#4CAF50";
     btn.style.color = "white";
-    btn.style.opacity = "1";
+    btn.style.padding = "10px 20px";
+    btn.style.margin = "8px";
+    btn.style.borderRadius = "12px";
+    btn.style.border = "none";
+    btn.style.cursor = "pointer";
+    btn.style.transition = "0.2s";
 
+    // 選択時の動作
     btn.addEventListener("click", () => {
       if (answered) return;
+      // 全選択肢リセット
       Array.from(choicesEl.children).forEach(b => {
         b.style.backgroundColor = "#4CAF50";
-        b.style.opacity = "1";
       });
-      btn.style.backgroundColor = "#00BFFF"; // 選択中の青
+      // 選択中だけ青
+      btn.style.backgroundColor = "#00BFFF";
       selectedAnswer = choice;
     });
 
@@ -94,10 +113,12 @@ function showQuestion() {
   });
 }
 
-// ✅ 回答ボタン押下時
+// ------------------------------
+// 「回答」ボタン押下時
+// ------------------------------
 answerBtn.addEventListener("click", () => {
   if (!selectedAnswer) {
-    alert("選択肢を選んでください");
+    alert("選択肢を選んでください！");
     return;
   }
 
@@ -108,23 +129,23 @@ answerBtn.addEventListener("click", () => {
     btn.disabled = true;
     if (btn.textContent === q.answer) {
       btn.style.backgroundColor = "#00BFFF"; // 正解 → 青
-      btn.style.color = "white";
     } else if (btn.textContent === selectedAnswer) {
       btn.style.backgroundColor = "#FF4444"; // 不正解 → 赤
-      btn.style.color = "white";
     } else {
-      btn.style.backgroundColor = "#CCCCCC"; // その他 → グレー薄く
+      btn.style.backgroundColor = "#CCCCCC"; // その他 → グレー
       btn.style.color = "#333";
       btn.style.opacity = "0.6";
     }
   });
 
-  // 「回答」非表示 → 「次へ」表示
+  // ボタン切り替え
   answerBtn.style.display = "none";
   nextBtn.style.display = "block";
 });
 
-// ✅ 次へボタン押下時
+// ------------------------------
+// 「次へ」ボタン押下時
+// ------------------------------
 nextBtn.addEventListener("click", () => {
   currentQuestionIndex++;
   if (currentQuestionIndex < selectedQuestions.length) {
@@ -134,7 +155,9 @@ nextBtn.addEventListener("click", () => {
   }
 });
 
-// ✅ 結果画面
+// ------------------------------
+// 結果表示
+// ------------------------------
 function showResult() {
   questionEl.textContent = "🎉 クイズ終了！お疲れさまでした！";
   choicesEl.innerHTML = "";
@@ -142,4 +165,7 @@ function showResult() {
   nextBtn.style.display = "none";
 }
 
+// ------------------------------
+// 実行開始
+// ------------------------------
 initQuiz();
