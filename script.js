@@ -49,7 +49,6 @@ const questionEl = document.getElementById("question");
 const choicesEl = document.getElementById("choices");
 const answerBtn = document.getElementById("answer-btn");
 const nextBtn = document.getElementById("next-btn");
-const popupEl = document.getElementById("popup");
 
 // 初期化
 function initQuiz() {
@@ -66,25 +65,22 @@ function showQuestion() {
   choicesEl.innerHTML = "";
   selectedAnswer = null;
   answered = false;
-  popupEl.classList.add("hidden");
-  answerBtn.classList.remove("hidden");
-  nextBtn.classList.add("hidden");
+
+  // ボタン状態リセット
+  answerBtn.style.display = "block";
+  nextBtn.style.display = "none";
 
   const shuffledChoices = [...q.choices].sort(() => 0.5 - Math.random());
   shuffledChoices.forEach(choice => {
     const btn = document.createElement("button");
     btn.textContent = choice;
-    btn.classList.add("choice-btn");
     btn.addEventListener("click", () => {
       if (answered) return;
-      // 選択状態リセット
       Array.from(choicesEl.children).forEach(b => {
-        b.classList.remove("selected");
-        b.style.backgroundColor = "#4CAF50"; // デフォルト緑
+        b.style.backgroundColor = "#4CAF50";
         b.style.color = "white";
       });
-      btn.classList.add("selected");
-      btn.style.backgroundColor = "#00BFFF"; // 選択中の色
+      btn.style.backgroundColor = "#00BFFF";
       selectedAnswer = choice;
     });
     choicesEl.appendChild(btn);
@@ -98,23 +94,23 @@ answerBtn.addEventListener("click", () => {
   const q = selectedQuestions[currentQuestionIndex];
 
   Array.from(choicesEl.children).forEach(btn => {
-    btn.disabled = true; // 押せなくする
+    btn.disabled = true;
     if (btn.textContent === q.answer) {
-      btn.style.backgroundColor = "#00BFFF"; // 正解：青
+      btn.style.backgroundColor = "#00BFFF"; // 正解
       btn.style.color = "white";
     } else if (btn.textContent === selectedAnswer) {
-      btn.style.backgroundColor = "#FF4444"; // 自分の間違い：赤
+      btn.style.backgroundColor = "#FF4444"; // 自分の間違い
       btn.style.color = "white";
     } else {
-      btn.style.backgroundColor = "#CCCCCC"; // その他：グレー
+      btn.style.backgroundColor = "#CCCCCC"; // その他の不正解
       btn.style.color = "#333";
-      btn.style.opacity = "0.6"; // 薄く
+      btn.style.opacity = "0.6";
     }
   });
 
-  // 回答ボタン→非表示、次へボタン→表示
-  answerBtn.classList.add("hidden");
-  nextBtn.classList.remove("hidden");
+  // 回答後の表示切り替え
+  answerBtn.style.display = "none";
+  nextBtn.style.display = "block";
 });
 
 // 次へボタン
@@ -131,8 +127,8 @@ nextBtn.addEventListener("click", () => {
 function showResult() {
   questionEl.textContent = "🎉 クイズ終了！お疲れさまでした！";
   choicesEl.innerHTML = "";
-  answerBtn.classList.add("hidden");
-  nextBtn.classList.add("hidden");
+  answerBtn.style.display = "none";
+  nextBtn.style.display = "none";
 }
 
 initQuiz();
