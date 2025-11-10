@@ -76,8 +76,8 @@ function showQuestion() {
     btn.textContent = choice;
     btn.addEventListener("click", () => {
       if (answered) return;
-      Array.from(choicesEl.children).forEach(b => b.style.backgroundColor="#4CAF50");
-      btn.style.backgroundColor = "#00BFFF"; // 選択色
+      Array.from(choicesEl.children).forEach(b => b.style.backgroundColor = "#4CAF50");
+      btn.style.backgroundColor = "#00BFFF"; // 一時選択色
       selectedAnswer = choice;
     });
     choicesEl.appendChild(btn);
@@ -92,12 +92,14 @@ answerBtn.addEventListener("click", () => {
   const q = selectedQuestions[currentQuestionIndex];
 
   Array.from(choicesEl.children).forEach(btn => {
-    if (btn.textContent === q.answer) btn.style.backgroundColor = "green";
-    else if (btn.textContent === selectedAnswer) btn.style.backgroundColor = "red";
+    if (btn.textContent === q.answer) {
+      btn.style.backgroundColor = "#00BFFF"; // 正解 → 青
+    } else if (btn.textContent === selectedAnswer) {
+      btn.style.backgroundColor = "#FF4444"; // 不正解選択 → 赤
+    } else {
+      btn.style.backgroundColor = "#4CAF50"; // その他 → 元の緑
+    }
   });
-
-  popupEl.textContent = selectedAnswer === q.answer ? "正解！" : "不正解！";
-  popupEl.classList.remove("hidden");
 
   answerBtn.classList.add("hidden");
   nextBtn.classList.remove("hidden");
@@ -113,7 +115,6 @@ nextBtn.addEventListener("click", () => {
     choicesEl.innerHTML = "";
     answerBtn.classList.add("hidden");
     nextBtn.classList.add("hidden");
-    popupEl.classList.add("hidden");
   }
 });
 
