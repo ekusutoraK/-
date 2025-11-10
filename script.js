@@ -74,10 +74,16 @@ function showQuestion() {
   shuffledChoices.forEach(choice => {
     const btn = document.createElement("button");
     btn.textContent = choice;
+    btn.classList.add("choice-btn");
     btn.addEventListener("click", () => {
       if (answered) return;
-      // すべてのボタンをリセット
-      Array.from(choicesEl.children).forEach(b => b.style.backgroundColor = "#4CAF50");
+      // 選択状態リセット
+      Array.from(choicesEl.children).forEach(b => {
+        b.classList.remove("selected");
+        b.style.backgroundColor = "#4CAF50"; // デフォルト緑
+        b.style.color = "white";
+      });
+      btn.classList.add("selected");
       btn.style.backgroundColor = "#00BFFF"; // 選択中の色
       selectedAnswer = choice;
     });
@@ -88,21 +94,25 @@ function showQuestion() {
 // 回答ボタン
 answerBtn.addEventListener("click", () => {
   if (!selectedAnswer) return alert("選択肢を選んでください");
-
   answered = true;
   const q = selectedQuestions[currentQuestionIndex];
 
   Array.from(choicesEl.children).forEach(btn => {
+    btn.disabled = true; // 押せなくする
     if (btn.textContent === q.answer) {
-      btn.style.backgroundColor = "#00BFFF"; // 正解 → 青
+      btn.style.backgroundColor = "#00BFFF"; // 正解：青
+      btn.style.color = "white";
     } else if (btn.textContent === selectedAnswer) {
-      btn.style.backgroundColor = "#FF4444"; // 自分の不正解 → 赤
+      btn.style.backgroundColor = "#FF4444"; // 自分の間違い：赤
+      btn.style.color = "white";
     } else {
-      btn.style.backgroundColor = "rgba(255, 255, 255, 0.3)"; // その他不正解 → 薄い色
+      btn.style.backgroundColor = "#CCCCCC"; // その他：グレー
+      btn.style.color = "#333";
+      btn.style.opacity = "0.6"; // 薄く
     }
   });
 
-  // 回答後にボタン切り替え
+  // 回答ボタン→非表示、次へボタン→表示
   answerBtn.classList.add("hidden");
   nextBtn.classList.remove("hidden");
 });
@@ -113,11 +123,16 @@ nextBtn.addEventListener("click", () => {
   if (currentQuestionIndex < selectedQuestions.length) {
     showQuestion();
   } else {
-    questionEl.textContent = "クイズ終了！";
-    choicesEl.innerHTML = "";
-    answerBtn.classList.add("hidden");
-    nextBtn.classList.add("hidden");
+    showResult();
   }
 });
+
+// 結果表示
+function showResult() {
+  questionEl.textContent = "🎉 クイズ終了！お疲れさまでした！";
+  choicesEl.innerHTML = "";
+  answerBtn.classList.add("hidden");
+  nextBtn.classList.add("hidden");
+}
 
 initQuiz();
