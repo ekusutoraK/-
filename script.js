@@ -52,7 +52,7 @@ const nextBtn = document.getElementById("next-btn");
 
 // 初期化
 function initQuiz() {
-  // ← ここが重要：ランダムに7問だけ選ぶ
+  // ✅ 必ず7問だけ選ぶ
   selectedQuestions = [...questions].sort(() => 0.5 - Math.random()).slice(0, 7);
   currentQuestionIndex = 0;
   showQuestion();
@@ -67,7 +67,6 @@ function showQuestion() {
   selectedAnswer = null;
   answered = false;
 
-  // ボタンの状態を初期化
   answerBtn.classList.remove("hidden");
   nextBtn.classList.add("hidden");
 
@@ -87,7 +86,7 @@ function showQuestion() {
   });
 }
 
-// 回答ボタン押下時の処理
+// 回答ボタン押下
 answerBtn.addEventListener("click", () => {
   if (!selectedAnswer) {
     alert("選択肢を選んでください！");
@@ -100,28 +99,28 @@ answerBtn.addEventListener("click", () => {
   Array.from(choicesEl.children).forEach(btn => {
     btn.disabled = true;
     if (btn.textContent === q.answer) {
-      btn.style.backgroundColor = "#00BFFF"; // 正解（青）
+      btn.style.backgroundColor = "#00BFFF"; // 正解
     } else if (btn.textContent === selectedAnswer) {
-      btn.style.backgroundColor = "#FF4444"; // 不正解（赤）
+      btn.style.backgroundColor = "#FF4444"; // 不正解
     } else {
-      btn.style.backgroundColor = "#CCCCCC"; // 他の選択肢はグレー
+      btn.style.backgroundColor = "#CCCCCC"; // その他
       btn.style.color = "#333";
       btn.style.opacity = "0.6";
     }
   });
 
-  // 回答ボタンを非表示にして「次へ」ボタンを表示
   answerBtn.classList.add("hidden");
   nextBtn.classList.remove("hidden");
 });
 
-// 次へボタン押下時の処理
+// 次へボタン押下
 nextBtn.addEventListener("click", () => {
   currentQuestionIndex++;
-  if (currentQuestionIndex < selectedQuestions.length) {
-    showQuestion();
-  } else {
+  // ✅ 7問終わったら結果へ
+  if (currentQuestionIndex >= selectedQuestions.length) {
     showResult();
+  } else {
+    showQuestion();
   }
 });
 
