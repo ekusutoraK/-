@@ -84,20 +84,18 @@ body {
   transform: scale(1.03);
 }
 
-#popup {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: rgba(0,0,0,0.8);
-  color: #fff;
-  padding: 20px 40px;
-  font-size: 24px;
-  border-radius: 15px;
-  text-align: center;
-  z-index: 100;
+.hidden {
+  display: none !important;
 }
 
-.hidden {
-  display: none;
+.correct {
+  background-color: #2196F3 !important;
+}
+
+.incorrect {
+  background-color: #f44336 !important;
+}
+
+.dim {
+  opacity: 0.4;
 }
