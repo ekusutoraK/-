@@ -53,7 +53,7 @@ const popupEl = document.getElementById("popup");
 
 // 初期化
 function initQuiz() {
-  selectedQuestions = [...questions].sort(() => 0.5 - Math.random()).slice(0,7);
+  selectedQuestions = [...questions].sort(() => 0.5 - Math.random()).slice(0, 7);
   currentQuestionIndex = 0;
   showQuestion();
 }
@@ -76,8 +76,9 @@ function showQuestion() {
     btn.textContent = choice;
     btn.addEventListener("click", () => {
       if (answered) return;
+      // すべてのボタンをリセット
       Array.from(choicesEl.children).forEach(b => b.style.backgroundColor = "#4CAF50");
-      btn.style.backgroundColor = "#00BFFF"; // 一時選択色
+      btn.style.backgroundColor = "#00BFFF"; // 選択中の色
       selectedAnswer = choice;
     });
     choicesEl.appendChild(btn);
@@ -95,12 +96,13 @@ answerBtn.addEventListener("click", () => {
     if (btn.textContent === q.answer) {
       btn.style.backgroundColor = "#00BFFF"; // 正解 → 青
     } else if (btn.textContent === selectedAnswer) {
-      btn.style.backgroundColor = "#FF4444"; // 不正解選択 → 赤
+      btn.style.backgroundColor = "#FF4444"; // 自分の不正解 → 赤
     } else {
-      btn.style.backgroundColor = "#4CAF50"; // その他 → 元の緑
+      btn.style.backgroundColor = "rgba(255, 255, 255, 0.3)"; // その他不正解 → 薄い色
     }
   });
 
+  // 回答後にボタン切り替え
   answerBtn.classList.add("hidden");
   nextBtn.classList.remove("hidden");
 });
