@@ -52,7 +52,8 @@ const nextBtn = document.getElementById("next-btn");
 
 // 初期化
 function initQuiz() {
-  selectedQuestions = [...questions].sort(() => 0.5 - Math.random());
+  // ← ここが重要：ランダムに7問だけ選ぶ
+  selectedQuestions = [...questions].sort(() => 0.5 - Math.random()).slice(0, 7);
   currentQuestionIndex = 0;
   showQuestion();
 }
