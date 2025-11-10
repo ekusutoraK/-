@@ -45,77 +45,45 @@ let selectedQuestions = [];
 let selectedAnswer = null;
 let answered = false;
 
-// ------------------------------
-// DOM取得
-// ------------------------------
 const questionEl = document.getElementById("question");
 const choicesEl = document.getElementById("choices");
 const answerBtn = document.getElementById("answer-btn");
 const nextBtn = document.getElementById("next-btn");
 
-// ------------------------------
-// クイズ初期化
-// ------------------------------
 function initQuiz() {
-  selectedQuestions = [...questions].sort(() => 0.5 - Math.random()); // ランダム
+  selectedQuestions = [...questions].sort(() => 0.5 - Math.random());
   currentQuestionIndex = 0;
   showQuestion();
-  nextBtn.style.display = "none"; // 初期は「次へ」非表示
+  nextBtn.classList.add("hidden"); // ← 最初は非表示
 }
 
-// ------------------------------
-// 問題表示
-// ------------------------------
 function showQuestion() {
   const q = selectedQuestions[currentQuestionIndex];
-  if (!q) return;
-
-  // 問題文
   questionEl.textContent = `第${currentQuestionIndex + 1}問 / ${selectedQuestions.length}問\n${q.question}`;
 
-  // 選択肢エリア初期化
   choicesEl.innerHTML = "";
   selectedAnswer = null;
   answered = false;
 
-  // ボタン表示設定
-  answerBtn.style.display = "block";
-  nextBtn.style.display = "none";
+  answerBtn.classList.remove("hidden");
+  nextBtn.classList.add("hidden"); // ← 新しい問題に切り替えたら再び非表示
 
-  // 選択肢をランダムに配置
   const shuffledChoices = [...q.choices].sort(() => 0.5 - Math.random());
   shuffledChoices.forEach(choice => {
     const btn = document.createElement("button");
     btn.textContent = choice;
     btn.className = "choice-btn";
     btn.style.backgroundColor = "#4CAF50";
-    btn.style.color = "white";
-    btn.style.padding = "10px 20px";
-    btn.style.margin = "8px";
-    btn.style.borderRadius = "12px";
-    btn.style.border = "none";
-    btn.style.cursor = "pointer";
-    btn.style.transition = "0.2s";
-
-    // 選択時の動作
     btn.addEventListener("click", () => {
       if (answered) return;
-      // 全選択肢リセット
-      Array.from(choicesEl.children).forEach(b => {
-        b.style.backgroundColor = "#4CAF50";
-      });
-      // 選択中だけ青
+      Array.from(choicesEl.children).forEach(b => b.style.backgroundColor = "#4CAF50");
       btn.style.backgroundColor = "#00BFFF";
       selectedAnswer = choice;
     });
-
     choicesEl.appendChild(btn);
   });
 }
 
-// ------------------------------
-// 「回答」ボタン押下時
-// ------------------------------
 answerBtn.addEventListener("click", () => {
   if (!selectedAnswer) {
     alert("選択肢を選んでください！");
@@ -124,28 +92,23 @@ answerBtn.addEventListener("click", () => {
 
   answered = true;
   const q = selectedQuestions[currentQuestionIndex];
-
   Array.from(choicesEl.children).forEach(btn => {
     btn.disabled = true;
     if (btn.textContent === q.answer) {
-      btn.style.backgroundColor = "#00BFFF"; // 正解 → 青
+      btn.style.backgroundColor = "#00BFFF"; // 正解
     } else if (btn.textContent === selectedAnswer) {
-      btn.style.backgroundColor = "#FF4444"; // 不正解 → 赤
+      btn.style.backgroundColor = "#FF4444"; // 不正解
     } else {
-      btn.style.backgroundColor = "#CCCCCC"; // その他 → グレー
+      btn.style.backgroundColor = "#CCCCCC"; // その他をグレー
       btn.style.color = "#333";
       btn.style.opacity = "0.6";
     }
   });
 
-  // ボタン切り替え
-  answerBtn.style.display = "none";
-  nextBtn.style.display = "block";
+  answerBtn.classList.add("hidden");  // 回答ボタン非表示
+  nextBtn.classList.remove("hidden"); // 次へボタン表示
 });
 
-// ------------------------------
-// 「次へ」ボタン押下時
-// ------------------------------
 nextBtn.addEventListener("click", () => {
   currentQuestionIndex++;
   if (currentQuestionIndex < selectedQuestions.length) {
@@ -155,17 +118,11 @@ nextBtn.addEventListener("click", () => {
   }
 });
 
-// ------------------------------
-// 結果表示
-// ------------------------------
 function showResult() {
   questionEl.textContent = "🎉 クイズ終了！お疲れさまでした！";
   choicesEl.innerHTML = "";
-  answerBtn.style.display = "none";
-  nextBtn.style.display = "none";
+  answerBtn.classList.add("hidden");
+  nextBtn.classList.add("hidden");
 }
 
-// ------------------------------
-// 実行開始
-// ------------------------------
 initQuiz();
