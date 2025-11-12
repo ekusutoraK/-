@@ -44,7 +44,7 @@ let currentQuestionIndex = 0;
 let selectedQuestions = [];
 let selectedAnswer = null;
 let answered = false;
-let score = 0; // スコア管理
+let score = 0;
 
 const questionEl = document.getElementById("question");
 const choicesEl = document.getElementById("choices");
@@ -100,12 +100,12 @@ answerBtn.addEventListener("click", () => {
   Array.from(choicesEl.children).forEach(btn => {
     btn.disabled = true;
     if (btn.textContent === q.answer) {
-      btn.style.backgroundColor = "#00BFFF"; // 正解
+      btn.style.backgroundColor = "#00BFFF";
       if(selectedAnswer === q.answer) score++;
     } else if (btn.textContent === selectedAnswer) {
-      btn.style.backgroundColor = "#FF4444"; // 不正解
+      btn.style.backgroundColor = "#FF4444";
     } else {
-      btn.style.backgroundColor = "#CCCCCC"; // その他
+      btn.style.backgroundColor = "#CCCCCC";
       btn.style.color = "#333";
       btn.style.opacity = "0.6";
     }
@@ -125,48 +125,42 @@ nextBtn.addEventListener("click", () => {
   }
 });
 
-// 結果表示 + タイトル・サブメッセージ + 再挑戦ボタン
+// 結果表示 + 点数ごとメッセージ + 再挑戦ボタン
 function showResult() {
   choicesEl.innerHTML = "";
   answerBtn.classList.add("hidden");
   nextBtn.classList.add("hidden");
 
+  // 点数ごとのメッセージ
+  const messages = {
+    0: { title: "残念！", subtitle: "次はがんばろう！" },
+    1: { title: "ちょっと惜しい！", subtitle: "次はもう少し頑張ろう！" },
+    2: { title: "まずまず", subtitle: "次はもっと取れるはず！" },
+    3: { title: "半分クリア！", subtitle: "あと少しで高得点！" },
+    4: { title: "いい感じ！", subtitle: "あと一歩で満点！" },
+    5: { title: "すごい！", subtitle: "高得点おめでとう！" },
+    6: { title: "もうすぐパーフェクト！", subtitle: "あと1問！" },
+    7: { title: "パーフェクト！", subtitle: "全問正解おめでとう！" }
+  };
+
   const total = selectedQuestions.length;
-  let title = "";
-  let subtitle = "";
+  const msg = messages[score] || { title: "結果", subtitle: `(${score}/${total}問正解)` };
 
-  if (score === total) {
-    title = "パーフェクト！";
-    subtitle = "全問正解です！";
-  } else if (score >= total * 0.7) {
-    title = "よくできました！";
-    subtitle = "上出来です！";
-  } else if (score >= total * 0.4) {
-    title = "まあまあです";
-    subtitle = "次はもっと頑張ろう！";
-  } else {
-    title = "次はがんばろう！";
-    subtitle = "あきらめずに挑戦！";
-  }
-
-  // タイトル用div
   const titleDiv = document.createElement("div");
-  titleDiv.textContent = title.toUpperCase(); // 大文字
+  titleDiv.textContent = msg.title.toUpperCase();
   titleDiv.style.fontSize = "24px";
   titleDiv.style.fontWeight = "bold";
   titleDiv.style.marginBottom = "10px";
 
-  // サブメッセージ用div
   const subtitleDiv = document.createElement("div");
-  subtitleDiv.textContent = subtitle;
+  subtitleDiv.textContent = msg.subtitle;
   subtitleDiv.style.fontSize = "16px";
   subtitleDiv.style.fontWeight = "normal";
 
-  questionEl.textContent = ""; // 元のテキストを消す
+  questionEl.textContent = "";
   questionEl.appendChild(titleDiv);
   questionEl.appendChild(subtitleDiv);
 
-  // 再挑戦ボタン
   const retryBtn = document.createElement("button");
   retryBtn.textContent = "もう一度挑戦";
   retryBtn.style.marginTop = "20px";
@@ -178,9 +172,7 @@ function showResult() {
   retryBtn.style.color = "white";
   retryBtn.style.fontSize = "16px";
   retryBtn.style.cursor = "pointer";
-  retryBtn.addEventListener("click", () => {
-    initQuiz();
-  });
+  retryBtn.addEventListener("click", () => initQuiz());
 
   choicesEl.appendChild(retryBtn);
 }
