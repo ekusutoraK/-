@@ -76,7 +76,7 @@ function showQuestion() {
     const btn = document.createElement("button");
     btn.textContent = choice;
     btn.className = "choice-btn";
-    btn.style.backgroundColor = "#4CAF50";
+    btn.style.backgroundColor = "#4CAF50"; // 常に緑
     btn.addEventListener("click", () => {
       if (answered) return;
       Array.from(choicesEl.children).forEach(b => b.classList.remove("selected"));
@@ -101,19 +101,21 @@ answerBtn.addEventListener("click", () => {
     const choiceText = btn.textContent;
     btn.disabled = true;
 
-    // まず全部薄くする
+    // 一旦全部薄くする
     btn.classList.add("dim");
 
-    // 選択肢・正解はdimを解除
+    // 正解 or 選んだ選択肢は薄くしない
     if (choiceText === q.answer || choiceText === selectedAnswer) {
       btn.classList.remove("dim");
     }
 
-    // 色付け
+    // 正解青／不正解赤
     if (choiceText === q.answer) {
-      btn.classList.add("correct");
+      btn.style.backgroundColor = "#2196F3"; // 青
     } else if (choiceText === selectedAnswer && selectedAnswer !== q.answer) {
-      btn.classList.add("incorrect");
+      btn.style.backgroundColor = "#f44336"; // 赤
+    } else {
+      btn.style.backgroundColor = "#4CAF50"; // 他は緑のまま（dimで薄く見える）
     }
   });
 
