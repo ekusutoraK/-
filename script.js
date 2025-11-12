@@ -40,26 +40,26 @@ const questions = [
   { question:"ゆはいちゃんねるの好きなポケモンは？", choices:["ミミッキュ","ピカチュウ","ライチュウ","ピチュー"], answer:"ミミッキュ" }
 ];
 
+let currentQuestionIndex = 0;
+let selectedQuestions = [];
+let selectedAnswer = null;
+let answered = false;
+let score = 0;
+
 const questionEl = document.getElementById("question");
 const choicesEl = document.getElementById("choices");
 const answerBtn = document.getElementById("answer-btn");
 const nextBtn = document.getElementById("next-btn");
 
-let currentQuestionIndex = 0;
-let selectedQuestions = [];
-let selectedAnswer = null;
-let score = 0;
-let answered = false;
-
-function startQuiz() {
-  selectedQuestions = [...questions]
-    .sort(() => 0.5 - Math.random())
-    .slice(0, 7);
+// 初期化
+function initQuiz() {
+  selectedQuestions = [...questions].sort(() => 0.5 - Math.random()).slice(0, 7);
   currentQuestionIndex = 0;
   score = 0;
   showQuestion();
 }
 
+// 問題を表示
 function showQuestion() {
   const q = selectedQuestions[currentQuestionIndex];
   questionEl.textContent = `第${currentQuestionIndex + 1}問 / ${selectedQuestions.length}問\n${q.question}`;
@@ -76,6 +76,7 @@ function showQuestion() {
     const btn = document.createElement("button");
     btn.textContent = choice;
     btn.className = "choice-btn";
+    btn.style.backgroundColor = "#4CAF50";
     btn.addEventListener("click", () => {
       if (answered) return;
       Array.from(choicesEl.children).forEach(b => b.classList.remove("selected"));
@@ -86,17 +87,32 @@ function showQuestion() {
   });
 }
 
+// 回答ボタン押下
 answerBtn.addEventListener("click", () => {
-  if (answered || selectedAnswer === null) return;
-  answered = true;
+  if (!selectedAnswer) {
+    alert("選択肢を選んでください！");
+    return;
+  }
 
+  answered = true;
   const q = selectedQuestions[currentQuestionIndex];
+
   Array.from(choicesEl.children).forEach(btn => {
+    const choiceText = btn.textContent;
+    btn.disabled = true;
+
+    // まず全部薄くする
     btn.classList.add("dim");
-    if (btn.textContent === q.answer) {
-      btn.classList.add("correct");
+
+    // 選択肢・正解はdimを解除
+    if (choiceText === q.answer || choiceText === selectedAnswer) {
       btn.classList.remove("dim");
-    } else if (btn.textContent === selectedAnswer) {
+    }
+
+    // 色付け
+    if (choiceText === q.answer) {
+      btn.classList.add("correct");
+    } else if (choiceText === selectedAnswer && selectedAnswer !== q.answer) {
       btn.classList.add("incorrect");
     }
   });
@@ -107,44 +123,42 @@ answerBtn.addEventListener("click", () => {
   nextBtn.classList.remove("hidden");
 });
 
+// 次へボタン押下
 nextBtn.addEventListener("click", () => {
   currentQuestionIndex++;
-  if (currentQuestionIndex < selectedQuestions.length) {
-    showQuestion();
-  } else {
+  if (currentQuestionIndex >= selectedQuestions.length) {
     showResult();
+  } else {
+    showQuestion();
   }
 });
 
+// 結果表示
 function showResult() {
+  const percentage = Math.round((score / selectedQuestions.length) * 100);
+  let resultText = "";
+  let subText = "";
+
+  if (percentage === 100) {
+    resultText = "PERFECT!";
+    subText = "全問正解！あなたは真のゆはいマスター！";
+  } else if (percentage >= 70) {
+    resultText = "GREAT!";
+    subText = "なかなかの実力！あと少しで満点！";
+  } else if (percentage >= 40) {
+    resultText = "GOOD!";
+    subText = "惜しい！ゆはい知識をもう少し磨こう！";
+  } else {
+    resultText = "TRY AGAIN!";
+    subText = "もっと動画を見て出直そう！";
+  }
+
+  questionEl.innerHTML = `<h2 style="font-size:40px; margin-bottom:10px;">${resultText}</h2>
+                          <p style="font-size:18px;">${subText}</p>`;
   choicesEl.innerHTML = "";
   answerBtn.classList.add("hidden");
   nextBtn.classList.add("hidden");
-
-  const total = selectedQuestions.length;
-  let title = "";
-  let subtitle = "";
-
-  if (score === total) {
-    title = "PERFECT!";
-    subtitle = `全問正解！あなたはクイズマスターです (${score}/${total})`;
-  } else if (score >= total * 0.7) {
-    title = "WELL DONE!";
-    subtitle = `よくできました！正解数: ${score}/${total}`;
-  } else if (score >= total * 0.4) {
-    title = "NOT BAD!";
-    subtitle = `もう少し！正解数: ${score}/${total}`;
-  } else {
-    title = "TRY AGAIN!";
-    subtitle = `がんばろう！正解数: ${score}/${total}`;
-  }
-
-  questionEl.innerHTML = `
-    <span style="font-size:36px; font-weight:bold; display:block;">${title}</span>
-    <span style="font-size:18px; display:block; margin-top:10px;">${subtitle}</span>
-  `;
 }
 
-startQuiz();
+// クイズ開始
 initQuiz();
-
