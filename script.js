@@ -125,28 +125,48 @@ nextBtn.addEventListener("click", () => {
   }
 });
 
-// 結果表示 + 再挑戦ボタン
+// 結果表示 + タイトル・サブメッセージ + 再挑戦ボタン
 function showResult() {
   choicesEl.innerHTML = "";
   answerBtn.classList.add("hidden");
   nextBtn.classList.add("hidden");
 
-  let message = "";
   const total = selectedQuestions.length;
+  let title = "";
+  let subtitle = "";
 
   if (score === total) {
-    message = `🎉 パーフェクト！全問正解です！ (${score}/${total})`;
+    title = "パーフェクト！";
+    subtitle = "全問正解です！";
   } else if (score >= total * 0.7) {
-    message = `👍 よくできました！ (${score}/${total})`;
+    title = "よくできました！";
+    subtitle = "上出来です！";
   } else if (score >= total * 0.4) {
-    message = `🙂 まあまあです (${score}/${total})`;
+    title = "まあまあです";
+    subtitle = "次はもっと頑張ろう！";
   } else {
-    message = `😢 次はがんばろう！ (${score}/${total})`;
+    title = "次はがんばろう！";
+    subtitle = "あきらめずに挑戦！";
   }
 
-  questionEl.textContent = message;
+  // タイトル用div
+  const titleDiv = document.createElement("div");
+  titleDiv.textContent = title.toUpperCase(); // 大文字
+  titleDiv.style.fontSize = "24px";
+  titleDiv.style.fontWeight = "bold";
+  titleDiv.style.marginBottom = "10px";
 
-  // 再挑戦ボタン作成
+  // サブメッセージ用div
+  const subtitleDiv = document.createElement("div");
+  subtitleDiv.textContent = subtitle;
+  subtitleDiv.style.fontSize = "16px";
+  subtitleDiv.style.fontWeight = "normal";
+
+  questionEl.textContent = ""; // 元のテキストを消す
+  questionEl.appendChild(titleDiv);
+  questionEl.appendChild(subtitleDiv);
+
+  // 再挑戦ボタン
   const retryBtn = document.createElement("button");
   retryBtn.textContent = "もう一度挑戦";
   retryBtn.style.marginTop = "20px";
