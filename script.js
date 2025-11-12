@@ -44,7 +44,6 @@ let currentQuestionIndex = 0;
 let selectedQuestions = [];
 let selectedAnswer = null;
 let answered = false;
-let score = 0;
 
 const questionEl = document.getElementById("question");
 const choicesEl = document.getElementById("choices");
@@ -53,9 +52,9 @@ const nextBtn = document.getElementById("next-btn");
 
 // 初期化
 function initQuiz() {
+  // ✅ 必ず7問だけ選ぶ
   selectedQuestions = [...questions].sort(() => 0.5 - Math.random()).slice(0, 7);
   currentQuestionIndex = 0;
-  score = 0;
   showQuestion();
 }
 
@@ -76,11 +75,11 @@ function showQuestion() {
     const btn = document.createElement("button");
     btn.textContent = choice;
     btn.className = "choice-btn";
-    btn.style.backgroundColor = "#4CAF50"; // 常に緑
+    btn.style.backgroundColor = "#4CAF50";
     btn.addEventListener("click", () => {
       if (answered) return;
-      Array.from(choicesEl.children).forEach(b => b.classList.remove("selected"));
-      btn.classList.add("selected");
+      Array.from(choicesEl.children).forEach(b => b.style.backgroundColor = "#4CAF50");
+      btn.style.backgroundColor = "#00BFFF";
       selectedAnswer = choice;
     });
     choicesEl.appendChild(btn);
@@ -98,28 +97,17 @@ answerBtn.addEventListener("click", () => {
   const q = selectedQuestions[currentQuestionIndex];
 
   Array.from(choicesEl.children).forEach(btn => {
-    const choiceText = btn.textContent;
     btn.disabled = true;
-
-    // 一旦全部薄くする
-    btn.classList.add("dim");
-
-    // 正解 or 選んだ選択肢は薄くしない
-    if (choiceText === q.answer || choiceText === selectedAnswer) {
-      btn.classList.remove("dim");
-    }
-
-    // 正解青／不正解赤
-    if (choiceText === q.answer) {
-      btn.style.backgroundColor = "#2196F3"; // 青
-    } else if (choiceText === selectedAnswer && selectedAnswer !== q.answer) {
-      btn.style.backgroundColor = "#f44336"; // 赤
+    if (btn.textContent === q.answer) {
+      btn.style.backgroundColor = "#00BFFF"; // 正解
+    } else if (btn.textContent === selectedAnswer) {
+      btn.style.backgroundColor = "#FF4444"; // 不正解
     } else {
-      btn.style.backgroundColor = "#4CAF50"; // 他は緑のまま（dimで薄く見える）
+      btn.style.backgroundColor = "#CCCCCC"; // その他
+      btn.style.color = "#333";
+      btn.style.opacity = "0.6";
     }
   });
-
-  if (selectedAnswer === q.answer) score++;
 
   answerBtn.classList.add("hidden");
   nextBtn.classList.remove("hidden");
@@ -128,6 +116,7 @@ answerBtn.addEventListener("click", () => {
 // 次へボタン押下
 nextBtn.addEventListener("click", () => {
   currentQuestionIndex++;
+  // ✅ 7問終わったら結果へ
   if (currentQuestionIndex >= selectedQuestions.length) {
     showResult();
   } else {
@@ -137,26 +126,7 @@ nextBtn.addEventListener("click", () => {
 
 // 結果表示
 function showResult() {
-  const percentage = Math.round((score / selectedQuestions.length) * 100);
-  let resultText = "";
-  let subText = "";
-
-  if (percentage === 100) {
-    resultText = "PERFECT!";
-    subText = "全問正解！あなたは真のゆはいマスター！";
-  } else if (percentage >= 70) {
-    resultText = "GREAT!";
-    subText = "なかなかの実力！あと少しで満点！";
-  } else if (percentage >= 40) {
-    resultText = "GOOD!";
-    subText = "惜しい！ゆはい知識をもう少し磨こう！";
-  } else {
-    resultText = "TRY AGAIN!";
-    subText = "もっと動画を見て出直そう！";
-  }
-
-  questionEl.innerHTML = `<h2 style="font-size:40px; margin-bottom:10px;">${resultText}</h2>
-                          <p style="font-size:18px;">${subText}</p>`;
+  questionEl.textContent = "🎉 クイズ終了！お疲れさまでした！";
   choicesEl.innerHTML = "";
   answerBtn.classList.add("hidden");
   nextBtn.classList.add("hidden");
