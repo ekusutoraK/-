@@ -44,6 +44,7 @@ let currentQuestionIndex = 0;
 let selectedQuestions = [];
 let selectedAnswer = null;
 let answered = false;
+let score = 0; // スコア管理
 
 const questionEl = document.getElementById("question");
 const choicesEl = document.getElementById("choices");
@@ -52,9 +53,9 @@ const nextBtn = document.getElementById("next-btn");
 
 // 初期化
 function initQuiz() {
-  // ✅ 必ず7問だけ選ぶ
   selectedQuestions = [...questions].sort(() => 0.5 - Math.random()).slice(0, 7);
   currentQuestionIndex = 0;
+  score = 0;
   showQuestion();
 }
 
@@ -100,6 +101,7 @@ answerBtn.addEventListener("click", () => {
     btn.disabled = true;
     if (btn.textContent === q.answer) {
       btn.style.backgroundColor = "#00BFFF"; // 正解
+      if(selectedAnswer === q.answer) score++;
     } else if (btn.textContent === selectedAnswer) {
       btn.style.backgroundColor = "#FF4444"; // 不正解
     } else {
@@ -116,7 +118,6 @@ answerBtn.addEventListener("click", () => {
 // 次へボタン押下
 nextBtn.addEventListener("click", () => {
   currentQuestionIndex++;
-  // ✅ 7問終わったら結果へ
   if (currentQuestionIndex >= selectedQuestions.length) {
     showResult();
   } else {
@@ -124,12 +125,44 @@ nextBtn.addEventListener("click", () => {
   }
 });
 
-// 結果表示
+// 結果表示 + 再挑戦ボタン
 function showResult() {
-  questionEl.textContent = "🎉 クイズ終了！お疲れさまでした！";
   choicesEl.innerHTML = "";
   answerBtn.classList.add("hidden");
   nextBtn.classList.add("hidden");
+
+  let message = "";
+  const total = selectedQuestions.length;
+
+  if (score === total) {
+    message = `🎉 パーフェクト！全問正解です！ (${score}/${total})`;
+  } else if (score >= total * 0.7) {
+    message = `👍 よくできました！ (${score}/${total})`;
+  } else if (score >= total * 0.4) {
+    message = `🙂 まあまあです (${score}/${total})`;
+  } else {
+    message = `😢 次はがんばろう！ (${score}/${total})`;
+  }
+
+  questionEl.textContent = message;
+
+  // 再挑戦ボタン作成
+  const retryBtn = document.createElement("button");
+  retryBtn.textContent = "もう一度挑戦";
+  retryBtn.style.marginTop = "20px";
+  retryBtn.style.padding = "10px";
+  retryBtn.style.width = "100%";
+  retryBtn.style.border = "none";
+  retryBtn.style.borderRadius = "10px";
+  retryBtn.style.backgroundColor = "#2196F3";
+  retryBtn.style.color = "white";
+  retryBtn.style.fontSize = "16px";
+  retryBtn.style.cursor = "pointer";
+  retryBtn.addEventListener("click", () => {
+    initQuiz();
+  });
+
+  choicesEl.appendChild(retryBtn);
 }
 
 // クイズ開始
