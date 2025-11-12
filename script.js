@@ -40,27 +40,26 @@ const questions = [
   { question:"ゆはいちゃんねるの好きなポケモンは？", choices:["ミミッキュ","ピカチュウ","ライチュウ","ピチュー"], answer:"ミミッキュ" }
 ];
 
-let currentQuestionIndex = 0;
-let selectedQuestions = [];
-let selectedAnswer = null;
-let answered = false;
-let score = 0;
-
 const questionEl = document.getElementById("question");
 const choicesEl = document.getElementById("choices");
 const answerBtn = document.getElementById("answer-btn");
 const nextBtn = document.getElementById("next-btn");
 
-// 初期化
-function initQuiz() {
-  // ランダムに7問だけ選択
-  selectedQuestions = [...questions].sort(() => 0.5 - Math.random()).slice(0, 7);
+let currentQuestionIndex = 0;
+let selectedQuestions = [];
+let selectedAnswer = null;
+let score = 0;
+let answered = false;
+
+function startQuiz() {
+  selectedQuestions = [...questions]
+    .sort(() => 0.5 - Math.random())
+    .slice(0, 7);
   currentQuestionIndex = 0;
   score = 0;
   showQuestion();
 }
 
-// 問題を表示
 function showQuestion() {
   const q = selectedQuestions[currentQuestionIndex];
   questionEl.textContent = `第${currentQuestionIndex + 1}問 / ${selectedQuestions.length}問\n${q.question}`;
@@ -79,7 +78,6 @@ function showQuestion() {
     btn.className = "choice-btn";
     btn.addEventListener("click", () => {
       if (answered) return;
-      Array.from(choicesEl.children).forEach(b => b.classList.remove("dim"));
       Array.from(choicesEl.children).forEach(b => b.classList.remove("selected"));
       btn.classList.add("selected");
       selectedAnswer = choice;
@@ -88,24 +86,18 @@ function showQuestion() {
   });
 }
 
-// 回答ボタン押下
 answerBtn.addEventListener("click", () => {
-  if (!selectedAnswer) {
-    alert("選択肢を選んでください！");
-    return;
-  }
-
+  if (answered || selectedAnswer === null) return;
   answered = true;
-  const q = selectedQuestions[currentQuestionIndex];
 
+  const q = selectedQuestions[currentQuestionIndex];
   Array.from(choicesEl.children).forEach(btn => {
-    btn.disabled = true;
+    btn.classList.add("dim");
     if (btn.textContent === q.answer) {
       btn.classList.add("correct");
+      btn.classList.remove("dim");
     } else if (btn.textContent === selectedAnswer) {
       btn.classList.add("incorrect");
-    } else {
-      btn.classList.add("dim");
     }
   });
 
@@ -115,17 +107,15 @@ answerBtn.addEventListener("click", () => {
   nextBtn.classList.remove("hidden");
 });
 
-// 次へボタン押下
 nextBtn.addEventListener("click", () => {
   currentQuestionIndex++;
-  if (currentQuestionIndex >= selectedQuestions.length) {
-    showResult();
-  } else {
+  if (currentQuestionIndex < selectedQuestions.length) {
     showQuestion();
+  } else {
+    showResult();
   }
 });
 
-// 結果表示
 function showResult() {
   choicesEl.innerHTML = "";
   answerBtn.classList.add("hidden");
@@ -149,17 +139,12 @@ function showResult() {
     subtitle = `がんばろう！正解数: ${score}/${total}`;
   }
 
-  questionEl.innerHTML = `<span style="font-size:36px; font-weight:bold; display:block;">${title}</span>
-                          <span style="font-size:18px; display:block; margin-top:10px;">${subtitle}</span>`;
-
-  // もう一度挑戦ボタン
-  nextBtn.textContent = "もう一度挑戦";
-  nextBtn.classList.remove("hidden");
-  nextBtn.addEventListener("click", () => {
-    nextBtn.textContent = "次へ";
-    initQuiz();
-  }, { once: true });
+  questionEl.innerHTML = `
+    <span style="font-size:36px; font-weight:bold; display:block;">${title}</span>
+    <span style="font-size:18px; display:block; margin-top:10px;">${subtitle}</span>
+  `;
 }
 
-// クイズ開始
+startQuiz();
 initQuiz();
+
