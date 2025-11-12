@@ -133,14 +133,14 @@ function showResult() {
 
   // 点数ごとのメッセージ
   const messages = {
-    0: { title: "残念！", subtitle: "次はがんばろう！" },
-    1: { title: "ちょっと惜しい！", subtitle: "次はもう少し頑張ろう！" },
-    2: { title: "まずまず", subtitle: "次はもっと取れるはず！" },
-    3: { title: "半分クリア！", subtitle: "あと少しで高得点！" },
-    4: { title: "いい感じ！", subtitle: "あと一歩で満点！" },
-    5: { title: "すごい！", subtitle: "高得点おめでとう！" },
-    6: { title: "もうすぐパーフェクト！", subtitle: "あと1問！" },
-    7: { title: "パーフェクト！", subtitle: "全問正解おめでとう！" }
+    0: { title: "一般人級", subtitle: "うわあああああ（発狂）" },
+    1: { title: "初見さん級", subtitle: "チャンネル登録はお済ですか？" },
+    2: { title: "バナナ級", subtitle: "( ᐛ👐)バナナ" },
+    3: { title: "ゆはいリスナー級", subtitle: "ゆはばんは" },
+    4: { title: "バナニンティウス級", subtitle: "バナナは激怒した" },
+    5: { title: "ユーハイム斎藤級", subtitle: "意外と古参？" },
+    6: { title: "ゆはいチャンネル級", subtitle: "代役は務まる" },
+    7: { title: "湯原俊哉級", subtitle: "あなたは本人です" }
   };
 
   const total = selectedQuestions.length;
@@ -179,3 +179,4 @@ function showResult() {
 
 // クイズ開始
 initQuiz();
+
