@@ -34,7 +34,6 @@ body {
   white-space: pre-line;
 }
 
-/* ✅ もとの緑に戻す */
 #choices button {
   display: block;
   margin: 10px auto;
@@ -49,31 +48,9 @@ body {
   transition: 0.2s;
 }
 
-/* 選択肢 hover */
 #choices button:hover {
   background-color: #45a049;
   transform: scale(1.03);
-}
-
-/* ✅ 選択中の選択肢 */
-.choice-btn.selected {
-  background-color: #45a049;
-  border: 2px solid #2e7d32;
-  transform: scale(1.04);
-}
-
-/* ✅ 回答結果の色 */
-.choice-btn.correct {
-  background-color: #00BFFF !important; /* 正解：青 */
-}
-
-.choice-btn.incorrect {
-  background-color: #FF4444 !important; /* 不正解：赤 */
-}
-
-/* ✅ 他の選択肢だけ薄く */
-.choice-btn.dim {
-  opacity: 0.5;
 }
 
 #answer-btn, #next-btn {
@@ -109,4 +86,16 @@ body {
 
 .hidden {
   display: none !important;
+}
+
+.correct {
+  background-color: #2196F3 !important;
+}
+
+.incorrect {
+  background-color: #f44336 !important;
+}
+
+.dim {
+  opacity: 0.4;
 }
